@@ -1,19 +1,16 @@
 // main.js
-// Logica Alpine.js + Chart.js per Calcolatore Interessi Composti
+// Logica globale per Calcolatore Interessi Composti usando funzione calculator
 
-document.addEventListener('alpine:init', () => {
-  Alpine.data('calculator', () => ({
-    // Variabili di stato
-    P: 10000, // Capitale iniziale
-    r: 5,     // Tasso annuo (%)
-    n: 12,    // Frequenza capitalizzazione (mensile)
-    t: 10,    // Durata (anni)
-    PMT: 0,   // Versamento periodico
+window.calculator = function() {
+  return {
+    P: 10000,       // Capitale iniziale
+    r: 5,           // Tasso annuo (%)
+    n: 12,          // Frequenza capitalizzazione (mensile)
+    t: 10,          // Durata (anni)
+    PMT: 0,         // Versamento periodico
     freqPMT: 'mensile', // Frequenza versamento
-    A: 0,     // Capitale finale
-    chart: null, // Istanza Chart.js
-
-    // Mappa frequenza versamento -> periodi
+    A: 0,           // Capitale finale
+    chart: null,    // Istanza Chart.js
     freqMap: {
       'annuale': 1,
       'semestrale': 2,
@@ -25,26 +22,24 @@ document.addEventListener('alpine:init', () => {
     calculateCompound(P, r, n, t, PMT, freqPMT) {
       const rate = r / 100;
       const periods = n * t;
-      const pmtPeriods = this.freqMap[freqPMT] * t;
-      const nPMT = this.freqMap[freqPMT];
       const i = rate / n;
-      // Formula base: A = P*(1+i)^(nt) + PMT*[(1+i)^(nt)-1]/i * (nPMT/n)
       let A = P * Math.pow(1 + i, periods);
       if (PMT > 0 && i > 0) {
+        const nPMT = this.freqMap[freqPMT];
         A += PMT * ((Math.pow(1 + i, periods) - 1) / i) * (nPMT / n);
       }
       return A;
     },
 
-    // Calcola la crescita anno per anno (per il grafico)
+    // Serie per il grafico (anno per anno)
     computeSeries() {
       let data = [];
       for (let year = 0; year <= this.t; year++) {
         const periods = this.n * year;
-        const nPMT = this.freqMap[this.freqPMT];
         const i = (this.r / 100) / this.n;
         let A = this.P * Math.pow(1 + i, periods);
         if (this.PMT > 0 && i > 0) {
+          const nPMT = this.freqMap[this.freqPMT];
           A += this.PMT * ((Math.pow(1 + i, periods) - 1) / i) * (nPMT / this.n);
         }
         data.push(Math.round(A));
@@ -52,16 +47,16 @@ document.addEventListener('alpine:init', () => {
       return data;
     },
 
-    // Funzione principale chiamata dal bottone
+    // Funzione principale del calcolo
     compute() {
       this.A = this.calculateCompound(this.P, this.r, this.n, this.t, this.PMT, this.freqPMT);
       this.updateChart();
     },
 
-    // Inizializza o aggiorna il grafico
+    // Inizializza o aggiorna Chart.js
     updateChart() {
       const ctx = document.getElementById('chart').getContext('2d');
-      const labels = Array.from({length: this.t + 1}, (_, i) => `${i} anni`);
+      const labels = Array.from({ length: this.t + 1 }, (_, i) => `${i} anni`);
       const data = this.computeSeries();
       if (this.chart) {
         this.chart.data.labels = labels;
@@ -83,20 +78,16 @@ document.addEventListener('alpine:init', () => {
           },
           options: {
             responsive: true,
-            plugins: {
-              legend: { display: false }
-            },
-            scales: {
-              y: { beginAtZero: true }
-            }
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
           }
         });
       }
     },
 
-    // Inizializza valori e grafico al mount
+    // Inizializza al mount
     init() {
       this.compute();
     }
-  }));
-});
+  };
+};
