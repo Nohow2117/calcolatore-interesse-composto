@@ -1,0 +1,8 @@
+# Node & build (non usati ma per sicurezza)
+node_modules/
+dist/
+build/
+*.log
+.DS_Store
+*.env
+assets/css/tailwind.css
