@@ -2,6 +2,7 @@
 // Logica globale per Calcolatore Interessi Composti usando funzione calculator
 
 window.calculator = function() {
+  let chartInstance = null;
   return {
     P: 10000,       // Capitale iniziale
     r: 5,           // Tasso annuo (%)
@@ -10,7 +11,6 @@ window.calculator = function() {
     PMT: 0,         // Versamento periodico
     freqPMT: 'mensile', // Frequenza versamento
     A: 0,           // Capitale finale
-    chart: null,    // Istanza Chart.js
     freqMap: {
       'annuale': 1,
       'semestrale': 2,
@@ -58,12 +58,12 @@ window.calculator = function() {
       const ctx = document.getElementById('chart').getContext('2d');
       const labels = Array.from({ length: this.t + 1 }, (_, i) => `${i} anni`);
       const data = this.computeSeries();
-      if (this.chart) {
-        this.chart.data.labels = labels;
-        this.chart.data.datasets[0].data = data;
-        this.chart.update();
+      if (chartInstance) {
+        chartInstance.data.labels = labels;
+        chartInstance.data.datasets[0].data = data;
+        chartInstance.update();
       } else {
-        this.chart = new Chart(ctx, {
+        chartInstance = new Chart(ctx, {
           type: 'line',
           data: {
             labels: labels,
@@ -77,7 +77,8 @@ window.calculator = function() {
             }]
           },
           options: {
-            responsive: true,
+            responsive: false,
+            animation: false,
             plugins: { legend: { display: false } },
             scales: { y: { beginAtZero: true } }
           }
