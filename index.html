@@ -24,6 +24,17 @@
   <header class="py-6 text-center">
     <h1 class="text-2xl font-bold">Calcolatore Interesse Composto</h1>
   </header>
+  
+  <!-- Breadcrumb visibile -->
+  <nav class="text-sm mb-4 max-w-xl mx-auto px-4" aria-label="breadcrumb">
+    <ol class="flex flex-wrap space-x-1 text-gray-500">
+      <li><a href="https://usalogratis.online" class="hover:text-indigo-600 underline">Home</a></li>
+      <li>/</li>
+      <li><a href="https://usalogratis.online/calcolatori" class="hover:text-indigo-600 underline">Calcolatori</a></li>
+      <li>/</li>
+      <li class="text-gray-700 font-medium" aria-current="page">Interesse Composto</li>
+    </ol>
+  </nav>
 
   <main class="max-w-xl mx-auto px-4" x-data="window.calculator()">
     <!-- Form di input -->
@@ -214,6 +225,32 @@
     "price": "0",
     "priceCurrency": "EUR"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://usalogratis.online"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Calcolatori",
+      "item": "https://usalogratis.online/calcolatori"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Interesse Composto",
+      "item": "https://usalogratis.online/calcolatore-interesse-composto"
+    }
+  ]
 }
 </script>
 </body>
